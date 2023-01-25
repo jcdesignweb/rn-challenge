@@ -1,0 +1,62 @@
+version: '3.3'
+services:
+  app:
+    environment:
+      PORT: 3000
+      NODE_ENV: dev
+      HOSTNAME: 0.0.0.0
+      MYSQL_DATABASE_HOST: db
+      MYSQL_DATABASE_NAME: warehousedb
+      MYSQL_DATABASE_USER: root
+      MYSQL_DATABASE_PASSWORD: mauFJcuf5dhRMQrjj
+      GOOGLE_API_KEY: AIzaSyAsUkfG3zHn5tbyYI70J2vmdN_z2CFquxs
+      JWT_SECRET: ThISIsSeCrEtETOkEN
+    container_name: warehouse-node-api_app
+    build:
+      context: .
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./:/app
+    command: npm run dev
+    depends_on:
+      - db
+    networks:
+      - warehouse
+  migration:
+    build:
+      context: .
+    command: ["npm", "run", "migrate:up"]
+    links:
+      - db
+    depends_on:
+      - db
+    environment:
+      MYSQL_DATABASE_HOST: db
+    networks:
+      - warehouse
+
+  db:
+    image: mysql:8.0
+    container_name: warehouse-node-api_db
+    cap_add:
+      - SYS_NICE
+    restart: always
+    environment:
+      MYSQL_DATABASE: warehousedb
+      MYSQL_ROOT_PASSWORD: mauFJcuf5dhRMQrjj
+      MYSQL_PASSWORD: "!changemeplease!"
+      MYSQL_USER: wareuser
+      
+    ports:
+      - '3306:3306'
+    volumes:
+      - db:/var/lib/mysql
+    networks:
+      - warehouse
+volumes:
+  db:
+    driver: local
+networks:
+  warehouse:
+    driver: bridge
