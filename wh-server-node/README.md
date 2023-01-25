@@ -68,7 +68,7 @@ To run this project, you will need to add the following environment variables to
 
 ## Migration
 
-to create a new migration:
+to run all migrations:
 ```bash
 docker-compose up migration
 
