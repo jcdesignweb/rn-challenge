@@ -36,6 +36,12 @@ Run the app server
   docker-compose up app
 ```
 
+Create a new folder called 'uploads' on the root path
+
+```bash
+  mkdir uploads 
+```
+
 Start the server with npm
 
 ```bash

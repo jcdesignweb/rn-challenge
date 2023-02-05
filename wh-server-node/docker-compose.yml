@@ -33,6 +33,9 @@ services:
       - db
     environment:
       MYSQL_DATABASE_HOST: db
+      MYSQL_DATABASE_NAME: warehousedb
+      MYSQL_DATABASE_USER: root
+      MYSQL_DATABASE_PASSWORD: mauFJcuf5dhRMQrjj
     networks:
       - warehouse
 

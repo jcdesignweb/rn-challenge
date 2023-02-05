@@ -1,6 +1,6 @@
 import { Request, NextFunction, Response } from 'express'
 import { Success, BadRequest } from '../response';
-import { LoginRequest } from '../request/user/login.request';
+import { LoginDto } from '../dto/user/login.dto';
 import UserService from '../service/user.service';
 import validator from 'email-validator'
 
@@ -8,7 +8,7 @@ export default class AuthController {
     static async login(req: Request, res: Response, next: NextFunction) {
 
         try {
-            const loginRequest: LoginRequest = req.body
+            const loginRequest: LoginDto = req.body
 
             console.info('POST /v1/user/login', '\n Request: \n', loginRequest)
 
@@ -35,7 +35,6 @@ export default class AuthController {
 
             if (authorization) {
                 const isLogOut = await UserService.logout(authorization)  
-                console.log("xxxxxxxxxxxxxxx")  
                 if (isLogOut !== null) {
                     return res.json(new Success(null))
                 }

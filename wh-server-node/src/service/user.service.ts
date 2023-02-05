@@ -1,4 +1,4 @@
-import { LoginRequest } from '../request/user/login.request'
+import { LoginDto } from '../dto/user/login.dto'
 import { BadRequest, NoAccess } from '../response'
 import { Md5 } from 'md5-typescript'
 
@@ -10,7 +10,7 @@ const encriptPassword = (password: string) => {
 }
 
 export default class UserService {
-    static async login(login: LoginRequest) {
+    static async login(login: LoginDto) {
         const { email, password } = login
 
         const user: User | null = await User.findOne({

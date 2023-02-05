@@ -1,25 +1,28 @@
 import { Request, NextFunction, Response } from 'express'
 import WarehouseService from '../service/warehouse.service'
-import { CreateWarehouseRequest } from '../request/warehouse/create.request'
+import { CreateWarehouseDto } from '../dto/warehouse/create.dto'
 import { Success, BadRequest, Fail } from '../response'
 import Warehouse from '../entity/warehouse.entity'
+import { WarehousesResponseDto } from 'src/dto/warehouse/get.dto'
 
+
+// CreateWarehousesResponseDto
 export default class WarehouseController {
     static async getAll(req: Request, res: Response, next: NextFunction) {
         console.info('GET /v1/warehouse')
         try {
             const warehouses = await WarehouseService.getAll()
-            return res.json(new Success(null, warehouses))
+            return res.json(new Success(null,  WarehousesResponseDto(warehouses)))
         } catch (e) {
             next(e)
         }
     }
-
+    
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
             console.info('POST /v1/warehouse', '\n Request Body: \n', req.body)
 
-            const createRequest: CreateWarehouseRequest = req.body
+            const createRequest: CreateWarehouseDto = req.body
 
             if (!createRequest.name) throw new BadRequest('Property name is missing or is invalid')
             if (!createRequest.address)
@@ -87,7 +90,13 @@ export default class WarehouseController {
 
             const { code } = req.params
 
-            const warehouse: Warehouse | null = await WarehouseService.getByCode(code)
+            if (!code) throw new BadRequest('Property code is missing or is invalid')
+
+            const warehouse: Warehouse | null = await WarehouseService.getByCode(String(code))
+            
+            if (!warehouse) {
+                throw new Fail('Warehouse code invalid.')
+            }
 
             res.download(`uploads/${warehouse?.list_file_name}`, function (err) {
                 if (err) {
@@ -103,6 +112,8 @@ export default class WarehouseController {
         try {
             const { address } = req.query
             const max = Number(req.query.max) || 3
+
+            if (!address) throw new BadRequest('Property address is missing or is invalid')
 
             console.info('GET /v1/warehouse/nearest', '\n Request params: \n', address)
 

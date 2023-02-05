@@ -37,13 +37,22 @@ export default class AuthService {
     }
 
     static async checkUserPermissions(token: string, permittedRoles: UserRole[]) {
+        console.log("Token", token)
+        const _token = token.split('Bearer ')
+        
+        if(!_token[1]) {
+            console.error("Token wrong format")
+            throw new NoAccess()
+        }
+
+        const tokenContent = String(_token[1])
         const user: User | null = await User.findOne({
             where: {
-                token
+                token: tokenContent
             }
         })
 
-        this.verify(token)
+        this.verify(tokenContent)
 
         if (user) {
             if (!permittedRoles[0].includes(user.role)) throw 'User does not have the privileges'

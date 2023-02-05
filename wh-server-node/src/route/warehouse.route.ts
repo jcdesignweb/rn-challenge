@@ -9,15 +9,18 @@ const router = express.Router()
 
 /**
  * GET /v1/warehouse
+ * @security BearerAuth
  * @summary it returns all warehouses
  * @tags Warehouse
- * @return {} 200 - success response - application/json
+ * @return {WarehouseResponseFull} 200 - success response - application/json
  */
 router.get(`/`, validateAuth([UserRole.Manager, UserRole.Basic]), WarehouseController.getAll)
 
 /**
  * POST /v1/warehouse
+ * @security BearerAuth
  * @summary it creates a new warehouse
+ * @param {WarehouseRequest} request.body.required - name body description
  * @tags Warehouse
  * @return {} 200 - success response - application/json
  */
@@ -25,6 +28,8 @@ router.post(`/`, validateAuth([UserRole.Manager, UserRole.Basic]), WarehouseCont
 
 /**
  * DELETE /v1/warehouse
+ * @security BearerAuth
+ * @param {string} code.query.required - warehouse code
  * @summary deletes a warehouse
  * @tags Warehouse
  * @return {} 200 - success response - application/json
@@ -33,6 +38,7 @@ router.delete(`/`, validateAuth([UserRole.Manager, UserRole.Basic]), WarehouseCo
 
 /**
  * PATCH /v1/warehouse/file
+ * @security BearerAuth
  * @summary it uploads a file
  * @tags Warehouse
  * @return {} 200 - success response - application/json
@@ -45,7 +51,9 @@ router.patch(
 )
 
 /**
- * GET /v1/warehouse/:code/file/download
+ * GET /v1/warehouse/{code}/file/download
+ * @security BearerAuth
+ * @param {string} code.path - warehouse code
  * @summary it downloads a list product file
  * @tags Warehouse
  * @return {} 200 - success response - application/json
@@ -57,10 +65,14 @@ router.get(
 )
 
 /**
- * POST /v1/warehouse/nearest
+ * GET /v1/warehouse/nearest
+ * @security BearerAuth
+ * @param {string} address.query.required - address to find
+ * @param {string} max.query - max size
  * @summary it creates a new warehouse
  * @tags Warehouse
- * @return {} 200 - success response - application/json
+ * @return {WarehouseNearestResponse} 200 - success response - application/json
+ * @return {} 500 - success response - application/json
  */
 router.get(`/nearest`, validateAuth([UserRole.Manager]), WarehouseController.nearest)
 
